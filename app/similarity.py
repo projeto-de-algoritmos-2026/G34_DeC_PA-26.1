@@ -54,3 +54,8 @@ def interpret_score(inversions, max_inversions=45):
         interpretation = "Oposição Completa! Suas preferências são o oposto absoluto uma da outra."
 
     return similarity_pct, interpretation
+
+
+def ratings_to_permutation(ratings):
+    # Retorna os índices originais ordenados por nota decrescente.
+    return sorted(range(len(ratings)), key=lambda i: -ratings[i])
