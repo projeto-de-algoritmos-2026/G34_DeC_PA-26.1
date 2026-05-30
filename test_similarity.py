@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.input_handler import parse_and_validate_ranking
-from app.similarity import ranking_to_permutation, calculate_similarity, interpret_score
+from app.similarity import ranking_to_permutation, calculate_similarity, interpret_score, ratings_to_permutation
 
 def run_test(label, condition):
     status = "OK" if condition else "FALHOU"
@@ -73,4 +73,15 @@ if __name__ == "__main__":
     except ValueError as e:
         run_test("parse_and_validate_ranking (erro duplicata)", "duplicados" in str(e))
 
+    # 5. Testar ratings_to_permutation com desempate estável
+    # Casos simples:
+    res_ratings1 = ratings_to_permutation([8.0, 9.5, 7.0])
+    run_test("ratings_to_permutation ordenação simples", res_ratings1 == [1, 0, 2])
+
+    # Caso com empates:
+    res_ratings2 = ratings_to_permutation([8.0, 9.5, 9.5])
+    # Deve preservar a ordem original (1 antes de 2) devido à estabilidade
+    run_test("ratings_to_permutation com empates (estável)", res_ratings2 == [1, 2, 0])
+
     print("\nTodos os testes unitários concluídos.")
+
