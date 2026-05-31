@@ -55,3 +55,32 @@ def get_user_ranking(movies, username="Usuário"):
             return ranking
         except ValueError as e:
             print(f"\n[ERRO DE VALIDAÇÃO] {e} Tente novamente.")
+
+
+def get_number_of_movies():
+    while True:
+        try:
+            entrada = input("\nQuantos filmes do Top IMDb você quer comparar? (5 a 250): ").strip()
+            n = int(entrada)
+            if 5 <= n <= 250:
+                return n
+            print("[ERRO] Digite um número entre 5 e 250.")
+        except ValueError:
+            print("[ERRO] Entrada inválida. Digite um número inteiro.")
+
+
+def get_user_ratings(movies):
+    print("\n=== Avalie cada filme de 0 a 10 (decimais permitidos, ex: 8.5) ===")
+    ratings = []
+    for i, movie in enumerate(movies, 1):
+        while True:
+            try:
+                entrada = input(f"  [{i:3d}] {movie}: ").strip()
+                rating = float(entrada)
+                if 0.0 <= rating <= 10.0:
+                    ratings.append(rating)
+                    break
+                print("       [ERRO] A nota deve ser entre 0 e 10.")
+            except ValueError:
+                print("       [ERRO] Entrada inválida. Digite um número.")
+    return ratings
