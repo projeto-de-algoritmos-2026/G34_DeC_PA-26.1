@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from app.imdb_client import fetch_top_movies
+from app.imdb_client import fetch_top_movies, is_offline_mode
 from app.input_handler import get_number_of_movies, get_user_ratings
 from app.similarity import ratings_to_permutation, interpret_score
 from algorithm.sort_and_count import sort_and_count
@@ -18,10 +18,16 @@ def main():
     n = get_number_of_movies()
 
     # 2. Buscar dados da API
-    print(f"\n[API] Conectando ao IMDb e buscando os top {n} filmes mais bem avaliados...")
+    if is_offline_mode():
+        print(f"\n[MODO OFFLINE] Nenhum .env com RAPIDAPI_KEY foi encontrado; usando os {n} filmes de app/movies.py.")
+    else:
+        print(f"\n[API] Conectando ao IMDb e buscando os top {n} filmes mais bem avaliados...")
     try:
         movies = fetch_top_movies(n)
-        print(f"[API] Sucesso! {len(movies)} filmes carregados.")
+        if is_offline_mode():
+            print(f"[LOCAL] Sucesso! {len(movies)} filmes carregados da lista local.")
+        else:
+            print(f"[API] Sucesso! {len(movies)} filmes carregados.")
     except Exception as e:
         print(f"\n[ERRO FATAL] Não foi possível carregar os filmes do IMDb: {e}")
         print("Certifique-se de estar conectado à internet e que a chave da API é válida.")

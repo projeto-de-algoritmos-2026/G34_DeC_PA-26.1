@@ -4,6 +4,8 @@ import os
 import subprocess
 from pathlib import Path
 
+from app.movies import MOVIES
+
 _HOST = "imdb236.p.rapidapi.com"
 _TOP250_URL = f"https://{_HOST}/api/imdb/top250-movies"
 _ROOT_ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
@@ -25,13 +27,27 @@ def _load_env():
 
 def _get_api_key():
     _load_env()
-    key = os.environ.get("RAPIDAPI_KEY", "").strip()
-    if not key:
+    return os.environ.get("RAPIDAPI_KEY", "").strip()
+
+
+def _fallback_movies(n):
+    if n > len(MOVIES):
         raise RuntimeError(
-            "Chave da API não encontrada.\n"
-            f"  Adicione RAPIDAPI_KEY=sua_chave no arquivo {_ROOT_ENV_PATH} ou {_APP_ENV_PATH}"
+            f"Sem RAPIDAPI_KEY, o modo offline suporta no máximo {len(MOVIES)} filmes."
         )
-    return key
+
+    return [
+        {
+            "title": title,
+            "image": "",
+            "rating": 0,
+        }
+        for title in MOVIES[:n]
+    ]
+
+
+def is_offline_mode():
+    return not bool(_get_api_key())
 
 
 def fetch_top_movies(n):
@@ -39,6 +55,9 @@ def fetch_top_movies(n):
         raise ValueError(f"n deve estar entre 1 e 250, recebeu {n}.")
 
     key = _get_api_key()
+
+    if not key:
+        return _fallback_movies(n)
 
     result = subprocess.run(
         [
