@@ -1,0 +1,12 @@
+============================================================
+     COMPARAÇÃO DE GOSTOS CINEMATOGRÁFICOS COM O TOP IMDb
+           (Baseado no Algoritmo de Inversões)
+============================================================
+
+Este programa obtém os 'n' filmes mais bem avaliados do IMDb
+e calcula a compatibilidade dos seus gostos com o ranking oficial
+com base nas notas de 0 a 10 que você atribuir a cada um deles.
+
+Quantos filmes do Top IMDb você quer comparar? (5 a 250): 
+
+Programa encerrado pelo usuário. Até logo!
