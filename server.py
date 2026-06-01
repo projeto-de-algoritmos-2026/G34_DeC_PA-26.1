@@ -286,10 +286,14 @@ def api_compare():
             return jsonify({"error": "Corpo da requisição inválido."}), 400
 
         movies = body.get("movies", [])
+        movie_ratings = body.get("movie_ratings", [])
         ratings = body.get("ratings", [])
 
         if not isinstance(movies, list) or not isinstance(ratings, list):
             return jsonify({"error": "movies e ratings devem ser listas."}), 400
+
+        if movie_ratings and not isinstance(movie_ratings, list):
+            return jsonify({"error": "movie_ratings deve ser uma lista."}), 400
 
         if len(movies) < 2 or len(ratings) < 2:
             return jsonify({"error": "Mínimo de 2 filmes para comparar."}), 400
@@ -297,6 +301,11 @@ def api_compare():
         if len(movies) != len(ratings):
             return jsonify({
                 "error": "movies e ratings devem ter o mesmo comprimento."
+            }), 400
+
+        if movie_ratings and len(movie_ratings) != len(movies):
+            return jsonify({
+                "error": "movies e movie_ratings devem ter o mesmo comprimento."
             }), 400
 
         # Validar cada nota
@@ -338,6 +347,7 @@ def api_compare():
             imdb_ranking.append({
                 "rank": rank + 1,
                 "title": movies[rank],
+                "rating": movie_ratings[rank] if movie_ratings else None,
             })
             user_idx, user_rating = user_ranking_pairs[rank]
             user_ranking.append({

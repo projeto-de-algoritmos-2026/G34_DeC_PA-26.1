@@ -1,6 +1,6 @@
 # G34_D-C_PA-26.1
 
-Projeto de comparação de gostos cinematográficos usando o algoritmo de **Contagem de Inversões** (Divide and Conquer / Merge Sort).
+Projeto de comparação de gostos cinematográficos usando o algoritmo de **Contagem de Inversões** (Dividir e Conquistar).
 
 ---
 
@@ -69,3 +69,71 @@ python3 imdb-API.py
 | ≤ 75% do máximo | Similaridade moderada |
 | < máximo | Baixa similaridade |
 | = máximo | 0% — gostos opostos |
+
+---
+
+## Visão geral do projeto
+
+Este repositório contém o CineRank — um sistema para comparar preferências cinematográficas. Ele oferece duas formas de uso:
+
+- CLI: comparar dois usuários usando uma lista fixa de 10 filmes (`main.py`).
+- Integração com o Top IMDb: avaliar `n` filmes do Top IMDb e comparar suas notas com o ranking oficial (`imdb-API.py` / interface web).
+
+Tecnologias principais:
+
+- Python 3 (lógica do algoritmo)
+- Flask (servidor que entrega a interface web em `server.py`)
+- Frontend estático (HTML/CSS/JS em `web/`)
+
+## Imagens (exemplo)
+
+Carrossel de avaliação:
+
+![Carrossel de Avaliação](assets/carrossel.png)
+
+Tela de resultados (gráfico e tabelas comparativas):
+
+![Resultados e Rankings](assets/resultado.png)
+
+Comparação detalhada dos rankings:
+
+![Resultados e Rankings](assets/rankings.png)
+
+## Como executar (detalhado)
+
+1. (Opcional) Crie e ative um virtualenv:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2. Instale dependências mínimas (apenas para a interface web):
+
+```bash
+pip install Flask
+```
+
+3. (Opcional) Configure a chave da API RapidAPI para usar o Top IMDb:
+
+Crie um arquivo `.env` na raiz do projeto com o conteúdo:
+
+```
+RAPIDAPI_KEY=sua_chave_aqui
+```
+
+4. Executar a interface web (abre em http://127.0.0.1:5000):
+
+```bash
+python3 server.py
+```
+
+5. Executar em terminal:
+
+```bash
+# Compara dois usuários (lista fixa de 10 filmes)
+python3 main.py
+
+# Compara suas notas com o Top IMDb (requer .env)
+python3 imdb-API.py
+```

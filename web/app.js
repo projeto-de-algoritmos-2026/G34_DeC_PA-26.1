@@ -61,6 +61,14 @@
     return poster;
   }
 
+  function formatRatingValue(value) {
+    var num = Number(value);
+    if (!Number.isNaN(num)) {
+      return num.toFixed(1);
+    }
+    return String(value);
+  }
+
   // -----------------------------------------------------------------------
   // DOM References
   // -----------------------------------------------------------------------
@@ -226,10 +234,10 @@
         meta.appendChild(yearSpan);
       }
 
-      if (movie.rating) {
+      if (movie.rating !== undefined && movie.rating !== null && movie.rating !== '') {
         var badge = document.createElement('span');
         badge.className = 'imdb-badge';
-        badge.textContent = '⭐ ' + movie.rating;
+        badge.textContent = '⭐ ' + formatRatingValue(movie.rating);
         meta.appendChild(badge);
       }
 
@@ -426,6 +434,7 @@
     hideError(errorCompare);
 
     var movieTitles = movies.map(function (m) { return m.title; });
+    var movieRatings = movies.map(function (m) { return m.rating; });
     var ratingValues = movies.map(function (_, i) { return ratings[i]; });
 
     // Validação final
@@ -445,6 +454,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           movies: movieTitles,
+          movie_ratings: movieRatings,
           ratings: ratingValues,
         }),
       });
@@ -495,7 +505,7 @@
     drawComparisonChart(data);
 
     // Build ranking lists
-    buildRankingList(imdbRankingList, data.imdb_ranking, false);
+    buildRankingList(imdbRankingList, data.imdb_ranking, true);
     buildRankingList(userRankingList, data.user_ranking, true);
   }
 
@@ -691,10 +701,10 @@
       titleEl.title = item.title;
       row.appendChild(titleEl);
 
-      if (showRating && item.rating !== undefined) {
+      if (showRating && item.rating !== undefined && item.rating !== null && item.rating !== '') {
         var badge = document.createElement('span');
         badge.className = 'ranking-rating-badge';
-        badge.textContent = '⭐ ' + item.rating.toFixed(1);
+        badge.textContent = '⭐ ' + formatRatingValue(item.rating);
         row.appendChild(badge);
       }
 
