@@ -6,19 +6,21 @@ from pathlib import Path
 
 _HOST = "imdb236.p.rapidapi.com"
 _TOP250_URL = f"https://{_HOST}/api/imdb/top250-movies"
-_ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+_ROOT_ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
+_APP_ENV_PATH = Path(__file__).resolve().parent / ".env"
 
 
 def _load_env():
-    if not _ENV_PATH.exists():
-        return
-    with open(_ENV_PATH, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, _, value = line.partition("=")
-            os.environ.setdefault(key.strip(), value.strip())
+    for env_path in (_ROOT_ENV_PATH, _APP_ENV_PATH):
+        if not env_path.exists():
+            continue
+        with open(env_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, value = line.partition("=")
+                os.environ.setdefault(key.strip(), value.strip())
 
 
 def _get_api_key():
@@ -27,7 +29,7 @@ def _get_api_key():
     if not key:
         raise RuntimeError(
             "Chave da API não encontrada.\n"
-            f"  Adicione RAPIDAPI_KEY=sua_chave no arquivo {_ENV_PATH}"
+            f"  Adicione RAPIDAPI_KEY=sua_chave no arquivo {_ROOT_ENV_PATH} ou {_APP_ENV_PATH}"
         )
     return key
 

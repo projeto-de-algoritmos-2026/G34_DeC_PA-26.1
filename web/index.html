@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Compare seus gostos cinematográficos com o ranking oficial do IMDb usando o algoritmo de contagem de inversões.">
+  <title>CineRank — Comparador de Rankings de Filmes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================================================================
+       SCREEN 1 — Tela Inicial
+       ================================================================ -->
+  <section id="screen-input" class="screen active">
+    <div class="intro-container">
+      <div class="app-icon" aria-hidden="true">🎬</div>
+      <h1>CineRank</h1>
+      <p>
+        Compare seus gostos cinematográficos com o ranking oficial do Top 250 IMDb.
+        Escolha quantos filmes avaliar e descubra sua compatibilidade!
+      </p>
+
+      <div class="input-group">
+        <label for="movie-count">Quantidade de filmes:</label>
+        <input
+          type="number"
+          id="movie-count"
+          class="input-number"
+          min="5"
+          max="250"
+          value="10"
+          aria-label="Quantidade de filmes para avaliar"
+        >
+        <button id="btn-fetch" class="btn btn-primary">Buscar Filmes</button>
+      </div>
+
+      <div id="loading-fetch" class="loading-spinner">
+        <div class="spinner-circle"></div>
+        <span>Buscando filmes do IMDb...</span>
+      </div>
+
+      <div id="error-fetch" class="error-msg" role="alert"></div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       SCREEN 2 — Carrossel + Avaliação
+       ================================================================ -->
+  <section id="screen-carousel" class="screen carousel-screen">
+    <div class="carousel-header">
+      <h2>Avalie os Filmes</h2>
+      <p>Dê uma nota de 0 a 10 para cada filme. Use os botões para navegar.</p>
+      <div class="progress-bar-container">
+        <div id="progress-fill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel-wrapper">
+      <div id="carousel-track" class="carousel-track">
+        <!-- Cards gerados via JS -->
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="carousel-controls">
+      <button id="btn-prev" class="btn btn-secondary">◀ PREV</button>
+      <span id="carousel-counter" class="carousel-counter">1 / 10</span>
+      <button id="btn-next" class="btn btn-green">NEXT ▶</button>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-area">
+      <button id="btn-submit" class="btn btn-primary" disabled>
+        Comparar Rankings
+      </button>
+      <div id="rated-count" class="rated-count"></div>
+    </div>
+
+    <div id="loading-compare" class="loading-spinner">
+      <div class="spinner-circle"></div>
+      <span>Calculando similaridade...</span>
+    </div>
+    <div id="error-compare" class="error-msg" role="alert"></div>
+  </section>
+
+  <!-- ================================================================
+       SCREEN 3 — Resultados
+       ================================================================ -->
+  <section id="screen-results" class="screen results-screen">
+    <div class="results-container">
+      <div class="results-header">
+        <h2>Resultado da Comparação</h2>
+      </div>
+
+      <!-- Score Ring -->
+      <div class="score-ring-container">
+        <div class="score-ring">
+          <svg viewBox="0 0 180 180">
+            <defs>
+              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#9b59b6"/>
+                <stop offset="100%" stop-color="#6abf69"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="90" cy="90" r="80"/>
+            <circle id="ring-fill" class="ring-fill" cx="90" cy="90" r="80"/>
+          </svg>
+          <div class="score-value">
+            <span id="score-number" class="score-number">0%</span>
+            <span class="score-label">Similaridade</span>
+          </div>
+        </div>
+        <p id="interpretation-text" class="interpretation-text"></p>
+        <p id="inversions-info" class="inversions-info"></p>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-section">
+        <h3>Gráfico Comparativo de Rankings</h3>
+        <div class="chart-canvas-container">
+          <canvas id="chart-canvas" width="800" height="400"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="chart-legend-item">
+            <div class="chart-legend-color" style="background: #9b59b6;"></div>
+            <span>Ranking IMDb</span>
+          </div>
+          <div class="chart-legend-item">
+            <div class="chart-legend-color" style="background: #6abf69;"></div>
+            <span>Seu Ranking</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rankings Table -->
+      <div class="rankings-table-section">
+        <h3>Rankings Detalhados</h3>
+        <div class="rankings-grid">
+          <div class="ranking-column">
+            <h4>🏆 Ranking IMDb (Oficial)</h4>
+            <div id="imdb-ranking-list"></div>
+          </div>
+          <div class="ranking-column">
+            <h4>⭐ Seu Ranking</h4>
+            <div id="user-ranking-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="results-actions">
+        <button id="btn-restart" class="btn btn-primary">Tentar Novamente</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
