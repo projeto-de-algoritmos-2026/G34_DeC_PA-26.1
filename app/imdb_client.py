@@ -48,7 +48,7 @@ def fetch_top_movies(n):
         ],
         capture_output=True,
         text=True,
-        timeout=20,
+        timeout=30,
     )
 
     if result.returncode != 0:
@@ -59,9 +59,17 @@ def fetch_top_movies(n):
     if not isinstance(data, list):
         raise RuntimeError(f"Resposta inesperada da API: {str(data)[:200]}")
 
-    titles = [item.get("primaryTitle", "") for item in data[:n] if item.get("primaryTitle")]
+    movies = [
+        {
+            "title": item["primaryTitle"],
+            "image": item.get("primaryImage", ""),
+            "rating": item.get("averageRating", "N/A"),
+        }
+        for item in data[:n]
+        if item.get("primaryTitle")
+    ]
 
-    if len(titles) < n:
-        raise RuntimeError(f"API retornou apenas {len(titles)} filmes, mas {n} foram solicitados.")
+    if len(movies) < n:
+        raise RuntimeError(f"API retornou apenas {len(movies)} filmes, mas {n} foram solicitados.")
 
-    return titles
+    return movies

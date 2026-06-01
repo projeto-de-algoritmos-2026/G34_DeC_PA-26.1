@@ -28,7 +28,7 @@ def main():
         sys.exit(1)
 
     # 3. Coletar notas do usuário para cada filme
-    ratings = get_user_ratings(movies)
+    ratings = get_user_ratings([m["title"] for m in movies])
 
     # 4. Converter as notas para permutação de índices baseada na ordem IMDb
     permutation = ratings_to_permutation(ratings)
@@ -47,10 +47,10 @@ def main():
     user_ranking_pairs = sorted(list(enumerate(ratings)), key=lambda x: x[1], reverse=True)
     
     for rank in range(n):
-        imdb_movie = movies[rank]
+        imdb_movie = movies[rank]["title"]
         user_movie_idx, user_rating = user_ranking_pairs[rank]
-        user_movie = movies[user_movie_idx]
-        
+        user_movie = movies[user_movie_idx]["title"]
+
         # Exibe lado a lado (com limites de tamanho de string para alinhamento)
         imdb_movie_display = (imdb_movie[:26] + '...') if len(imdb_movie) > 29 else imdb_movie
         user_movie_display = (user_movie[:21] + '...') if len(user_movie) > 24 else user_movie
