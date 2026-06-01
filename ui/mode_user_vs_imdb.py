@@ -2,6 +2,7 @@ import streamlit as st
 from app.imdb_client import fetch_top_movies
 from app.similarity import ratings_to_permutation, interpret_score
 from algorithm.sort_and_count import sort_and_count
+from ui.components import render_movie_grid
 
 
 @st.cache_data(ttl=3600)
@@ -49,33 +50,25 @@ def render():
         st.info("Clique em **Buscar Filmes** para carregar o catálogo.")
         return
 
-    # ── Cards + sliders de nota ───────────────────────────────────────────────
+    # ── Cards + inputs de nota ───────────────────────────────────────────────
     st.divider()
     st.subheader("Atribua sua nota de 0 a 10 para cada filme")
 
     ratings = []
-    cols_per_row = 5
 
-    for row_start in range(0, len(movies), cols_per_row):
-        row_movies = movies[row_start:row_start + cols_per_row]
-        cols = st.columns(cols_per_row)
+    def _nota_widget(movie, idx):
+        nota = st.number_input(
+            "Sua nota",
+            min_value=0.0,
+            max_value=10.0,
+            value=5.0,
+            step=0.5,
+            key=f"uvi_nota_{idx}",
+            label_visibility="collapsed",
+        )
+        ratings.append(nota)
 
-        for col, movie in zip(cols, row_movies):
-            with col:
-                if movie["image"]:
-                    st.image(movie["image"], use_container_width=True)
-                st.caption(f"**{movie['title']}**")
-                st.caption(f"⭐ IMDb: {movie['rating']}")
-                nota = st.number_input(
-                    "Sua nota",
-                    min_value=0.0,
-                    max_value=10.0,
-                    value=5.0,
-                    step=0.5,
-                    key=f"uvi_nota_{row_start + row_movies.index(movie)}",
-                    label_visibility="collapsed",
-                )
-                ratings.append(nota)
+    render_movie_grid(movies, _nota_widget)
 
     # ── Botão comparar ────────────────────────────────────────────────────────
     st.divider()

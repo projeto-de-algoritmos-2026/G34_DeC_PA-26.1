@@ -1,6 +1,7 @@
 import streamlit as st
 from app.imdb_client import fetch_top_movies
 from app.similarity import calculate_similarity, interpret_score
+from ui.components import render_movie_grid
 
 
 @st.cache_data(ttl=3600)
@@ -19,35 +20,25 @@ def _init_state():
 
 
 def _coletar_ranking(movies, prefixo):
-    """Exibe os filmes em cards e coleta a posição atribuída pelo usuário a cada um."""
+    """Coleta a posicao atribuida pelo usuario a cada filme via render_movie_grid."""
     n = len(movies)
-    st.caption(f"Atribua uma posição de 1 (favorito) a {n} (menos favorito) para cada filme. Sem repetições.")
+    st.caption(f"Atribua uma posicao de 1 (favorito) a {n} (menos favorito) para cada filme. Sem repeticoes.")
 
     posicoes = {}
-    cols_per_row = 5
 
-    for row_start in range(0, n, cols_per_row):
-        row_movies = movies[row_start:row_start + cols_per_row]
-        cols = st.columns(cols_per_row)
+    def _pos_widget(movie, idx):
+        pos = st.number_input(
+            "Posicao",
+            min_value=1,
+            max_value=n,
+            value=idx + 1,
+            step=1,
+            key=f"{prefixo}_pos_{idx}",
+            label_visibility="collapsed",
+        )
+        posicoes[idx] = int(pos)
 
-        for col, movie in zip(cols, row_movies):
-            idx = row_start + row_movies.index(movie)
-            with col:
-                if movie["image"]:
-                    st.image(movie["image"], use_container_width=True)
-                st.caption(f"**{movie['title']}**")
-                st.caption(f"IMDb: {movie['rating']}")
-                pos = st.number_input(
-                    "Posicao",
-                    min_value=1,
-                    max_value=n,
-                    value=idx + 1,
-                    step=1,
-                    key=f"{prefixo}_pos_{idx}",
-                    label_visibility="collapsed",
-                )
-                posicoes[idx] = int(pos)
-
+    render_movie_grid(movies, _pos_widget)
     return posicoes
 
 
