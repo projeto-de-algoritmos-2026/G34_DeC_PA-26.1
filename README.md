@@ -1,8 +1,13 @@
 # G34_D-C_PA-26.1
 
 Projeto de comparação de gostos cinematográficos usando o algoritmo de **Contagem de Inversões** (Dividir e Conquistar).
-
 ---
+
+## Alunos
+|Matrícula | Aluno |
+| -- | -- |
+| 211062867  |  Felipe de Jesus Rodrigues |
+| 211043763  |  Ruan Sobreira Carvalho |
 
 ## Programas disponíveis
 
@@ -137,3 +142,10 @@ python3 main.py
 # Compara suas notas com o Top IMDb (requer .env)
 python3 imdb-API.py
 ```
+
+# Vídeo apresentação
+
+O vídeo de apresentação pode ser acessado clicando no link abaixo.
+
+[Apresentação](https://youtu.be/ZnMniWP30Ho)
+	
